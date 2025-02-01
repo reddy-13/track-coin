@@ -11,10 +11,9 @@ Before you begin, ensure you have the following installed on your machine:
 - Docker (for running Kafka locally)
 
 ## Getting Started
-1. **Clone the Repository**
-### 1. Clone the Repository
+1. **Clone the Repository**:
 
-```
+```bash
 git clone https://github.com/reddy-13/track-coin.git
 cd track-coin```
 
@@ -101,3 +100,24 @@ realtime-data-dashboard/
 │   └── Dockerfile
 ├── .gitignore
 └── README.md
+```
+## Assumptions Made During Development
+
+This section outlines some key assumptions made during the development of this real-time data dashboard:
+
+**Initial Development Challenges:**
+
+* **Single Docker Container:** Initially, a single Docker container was used to house all application components (backend, frontend, Kafka, Zookeeper). This approach proved to be cumbersome for managing and debugging individual parts. The current architecture separates these components into distinct containers for better maintainability and scalability.
+* **Single-Page Application (SPA) Approach:** The initial plan was to build the entire application as a full-fledged SPA using Next.js. However, this approach presented limitations for handling real-time data streaming and WebSocket connections. The current setup with a separate backend using Express.js offers a more suitable solution for these functionalities.
+* **Static Currency List:** The initial implementation included a fixed list of currencies. This has been improved to allow users to dynamically subscribe to specific symbols, providing greater flexibility and user control.
+
+**Current Limitations:**
+
+* **Mexc API Integration:** While the WebSocket connection to Mexc is established, the logic for retrieving and processing data from the Mexc API might still require further development.
+* **Kucoin Integration:** The Kucoin WebSocket connection is functional, but the frontend might not be fully displaying the received data yet. Additional work might be needed to integrate the data into the user interface.
+* **Bybit API Access:** The provided Bybit WebSocket URL might not be accessible or require further configuration for successful data retrieval.
+
+These assumptions provide transparency into the development process and highlight areas for potential improvement.
+
+
+
