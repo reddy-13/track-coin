@@ -1,0 +1,43 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+
+  backend:
+    build:
+      context: ..  # Go up one level to the project root
+      dockerfile: docker/backend.Dockerfile  # Path to Dockerfile relative to context
+    ports:
+      - "3001:3001"
+    environment:
+      KAFKA_BROKERS: kafka:9092
+      MEXC_WEBSOCKET_URL: wss://wbs.mexc.com/ws
+      BYBIT_WEBSOCKET_URL: wss://stream.bybit.com/v5/public/linear
+      KUCOIN_WEBSOCKET_URL: wss://ws-api.kucoin.com/endpoint
+    depends_on:
+      - kafka
+
+  frontend:
+    build:
+      context: ..  # Go up one level to the project root
+      dockerfile: docker/frontend.Dockerfile  # Path to Dockerfile relative to context
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_BACKEND_URL: http://backend:3001
+    depends_on:
+      - backend
